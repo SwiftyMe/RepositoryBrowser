@@ -18,6 +18,8 @@ struct RepositoryInfoView: View {
     
     @Environment(\.presentationMode) private var presentationMode
     
+    private let imageSize = CGFloat(150)
+    
     var body: some View {
         
         VStack {
@@ -38,13 +40,13 @@ struct RepositoryInfoView: View {
                 
                 VStack(spacing:5) {
                     
-                    if let image = viewModel.image {
+                    if let image = viewModel.avatarImage {
                         
                         Image(uiImage:image)
                             .resizable()
                             .aspectRatio(contentMode:.fit)
                             .padding(5)
-                            .frame(height: 100)
+                            .frame(height: imageSize)
                     }
                     else {
                         
@@ -54,7 +56,7 @@ struct RepositoryInfoView: View {
                             .padding(9)
                             .background(Color("LightGreen"))
                             .cornerRadius(8)
-                            .frame(height: 100)
+                            .frame(height: imageSize)
                     }
                     
                     Text(viewModel.fullName)
@@ -103,9 +105,8 @@ struct RepositoryInfoView: View {
         .padding()
         .navigationBarHidden(true)
     }
-    
+
     private func close() {
-        
         presentationMode.wrappedValue.dismiss()
     }
 }

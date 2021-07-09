@@ -48,8 +48,13 @@ struct RepositoryView: View {
             
             Spacer()
         }
-        .frame(height:50)
+        .frame(height:60)
         .padding(5)
+        .onAppear(perform:onAppear)
+    }
+    
+    private func onAppear() {
+        viewModel.onAppear()
     }
 }
 

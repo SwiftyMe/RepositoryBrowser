@@ -18,17 +18,17 @@ class RepositoryInfoViewModel: ObservableObject, Identifiable {
     @Published var error: String?
 
     var id: Int {
-        return model.id
+        model.id
     }
     
-    @Published var image: UIImage?
+    @Published var avatarImage: UIImage?
     
     let fullName: String
     var language: String = ""
     
     @Published var infos: [Info]
     
-    init(model: RepositoryModel, api:APIServiceRepository) {
+    init(model: RepositoryModel, avatarImage: UIImage? = nil, api:APIServiceRepository) {
         
         self.api = api
         self.model = model
@@ -43,8 +43,10 @@ class RepositoryInfoViewModel: ObservableObject, Identifiable {
         infos.append(Info(name:"Starred", info:String(model.stargazersCount ?? 0)))
         infos.append(Info(name:"Last release version", info:""))
         
-        if let url = model.owner.avatarURL {
-            loadImageAsyncFromURL(url, setter: { [weak self] in self?.image = $0 })
+        self.avatarImage = avatarImage
+        
+        if let url = model.owner.avatarURL, avatarImage == nil {
+            loadImageAsyncFromURL(url, setter: { [weak self] in self?.avatarImage = $0 })
         }
         
         if var url = model.releasesUrl {

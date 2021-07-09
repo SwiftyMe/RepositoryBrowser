@@ -32,7 +32,6 @@ struct RepositoryBrowserView: View {
                         .foregroundColor(.gray)
                         .padding(.leading, 12)
                     
-                    
                     TextField("Search for repository",text:$viewModel.searchText) { isEditing in
                     } onCommit: {
                         viewModel.search()
@@ -66,8 +65,10 @@ struct RepositoryBrowserView: View {
                             
                             NavigationLink(
                                 destination:
-                                    RepositoryInfoView(viewModel:RepositoryInfoViewModel(model:repository.modelObject, api: APIService())),
-                                label: {
+                                    RepositoryInfoView(viewModel:
+                                        RepositoryInfoViewModel(model: repository.modelObject,
+                                                    avatarImage: repository.image, api: APIService()))
+                                ,label: {
                                     RepositoryView(viewModel:repository)
                                 })
                         }

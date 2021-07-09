@@ -22,7 +22,7 @@ class RepositoryViewModel: ObservableObject, Identifiable, ModelObjectAccessor {
 
     /// Identifiable conformance
     var id: Int {
-        return model.id
+        model.id
     }
 
     @Published var name: String
@@ -30,6 +30,15 @@ class RepositoryViewModel: ObservableObject, Identifiable, ModelObjectAccessor {
     @Published var description: String
     @Published var image: UIImage?
     
+    func onAppear() {
+        
+        guard image == nil else { return }
+
+        if let url = model.owner.avatarURL {
+            loadImageAsyncFromURL(url, cached:true, setter: { [weak self] in self?.image = $0 })
+        }
+    }
+
     init(model: RepositoryModel) {
         
         self.model = model
@@ -38,10 +47,6 @@ class RepositoryViewModel: ObservableObject, Identifiable, ModelObjectAccessor {
         self.fullName = model.fullName
         
         self.description = model.description ?? ""
-        
-        if let url = model.owner.avatarURL {
-            loadImageAsyncFromURL(url, setter: { [weak self] in self?.image = $0 })
-        }
     }
     
     private let model: RepositoryModel
