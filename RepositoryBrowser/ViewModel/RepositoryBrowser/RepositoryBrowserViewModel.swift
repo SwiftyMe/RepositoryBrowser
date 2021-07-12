@@ -40,16 +40,18 @@ class RepositoryBrowserViewModel: ObservableObject {
             
             cancellable = api.repositories(withName:searchText).sink(
                 receiveCompletion: { [weak self] completion in
+                    guard let self = self else { return }
                     switch completion {
                     case .failure(let error):
-                        self?.error = error.localizedDescription
-                        self?.repositories = nil
+                        self.error = error.localizedDescription
+                        self.repositories = nil
                     case .finished:
-                        self?.error = nil
+                        self.error = nil
                     }
                 },
                 receiveValue: { [weak self] value in
-                    self?.repositories = value.map { RepositoryViewModel.init(model:$0) }
+                    guard let self = self else { return }
+                    self.repositories = value.map { RepositoryViewModel.init(model:$0) }
                 })
         }
     }

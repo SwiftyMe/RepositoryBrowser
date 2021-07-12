@@ -57,21 +57,22 @@ class RepositoryInfoViewModel: ObservableObject, Identifiable {
             
             cancellable = api.releases(url:url).sink(
                 receiveCompletion: { [weak self] completion in
+                    guard let self = self else { return }
                     switch completion {
                     case .failure(let error):
-                        self?.error = error.localizedDescription
+                        self.error = error.localizedDescription
                     case .finished:
-                        self?.error = nil
+                        self.error = nil
                     }
                 },
                 receiveValue: { [weak self] value in
-                    
+                    guard let self = self else { return }
                     if value.count > 0 {
                         
                         if let last = value.max(by: { $0.releaseDate < $1.releaseDate }) {
                             
-                            self?.infos.removeLast()
-                            self?.infos.append(Info(name:"Last release version", info:last.tagName))
+                            self.infos.removeLast()
+                            self.infos.append(Info(name:"Last release version", info:last.tagName))
                         }
                     }
                 })
