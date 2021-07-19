@@ -104,10 +104,15 @@ struct RepositoryInfoView: View {
         }
         .padding()
         .navigationBarHidden(true)
+        .onAppear(perform:onAppear)
     }
 
     private func close() {
         presentationMode.wrappedValue.dismiss()
+    }
+    
+    private func onAppear() {
+        viewModel.onAppear()
     }
 }
 

@@ -15,3 +15,14 @@ struct RepositoryBrowserApp: App {
         }
     }
 }
+
+private struct APIServiceKey: EnvironmentKey {
+    static let defaultValue: RepositoryAPI = APIService()
+}
+
+extension EnvironmentValues {
+  var repositoryAPI: RepositoryAPI {
+    get { self[APIServiceKey.self] }
+    set { self[APIServiceKey.self] = newValue }
+  }
+}

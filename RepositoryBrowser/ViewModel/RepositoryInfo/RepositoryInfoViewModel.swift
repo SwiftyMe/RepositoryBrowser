@@ -16,26 +16,36 @@ import Combine
 class RepositoryInfoViewModel: ObservableObject, Identifiable {
     
     @Published var error: String?
-
+    
     var id: Int {
         model.id
+    }
+    
+    /// SwiftUI life cycle event onAppear
+    func onAppear() {
+        
+        updateImage()
+        updateRelease()
+
+        assert(!appeared)
+        appeared = true
     }
     
     @Published var avatarImage: UIImage?
     
     let fullName: String
-    var language: String = ""
+    let language: String
     
     @Published var infos: [Info]
     
-    init(model: RepositoryModel, avatarImage: UIImage? = nil, api:APIServiceRepository) {
+    init(model: RepositoryModel, avatarImage: UIImage? = nil, api: RepositoryAPI) {
         
         self.api = api
         self.model = model
         
         fullName = model.fullName
         language = model.language ?? "N/A"
-
+        
         infos = []
         
         infos.append(Info(name:"Forks", info:String(model.forksCount ?? 0)))
@@ -44,44 +54,12 @@ class RepositoryInfoViewModel: ObservableObject, Identifiable {
         infos.append(Info(name:"Last release version", info:""))
         
         self.avatarImage = avatarImage
-        
-        if let url = model.owner.avatarURL, avatarImage == nil {
-            loadImageAsyncFromURL(url, setter: { [weak self] in self?.avatarImage = $0 })
-        }
-        
-        if var url = model.releasesUrl {
-            
-            if let i = url.firstIndex(of:"{") {
-                url.removeSubrange(i ..< url.endIndex)
-            }
-            
-            cancellable = api.releases(url:url).sink(
-                receiveCompletion: { [weak self] completion in
-                    guard let self = self else { return }
-                    switch completion {
-                    case .failure(let error):
-                        self.error = error.localizedDescription
-                    case .finished:
-                        self.error = nil
-                    }
-                },
-                receiveValue: { [weak self] value in
-                    guard let self = self else { return }
-                    if value.count > 0 {
-                        
-                        if let last = value.max(by: { $0.releaseDate < $1.releaseDate }) {
-                            
-                            self.infos.removeLast()
-                            self.infos.append(Info(name:"Last release version", info:last.tagName))
-                        }
-                    }
-                })
-        }
     }
     
     private let model: RepositoryModel
-    private let api: APIServiceRepository?
+    private let api: RepositoryAPI?
     private var cancellable: AnyCancellable?
+    private var appeared = false
 }
 
 
@@ -91,6 +69,48 @@ struct Info: Identifiable {
     
     let name: String
     let info: String
+}
+
+
+extension RepositoryInfoViewModel {
+    
+    func updateImage() {
+        
+        if let url = model.owner.avatarURL, avatarImage == nil {
+            loadImageAsyncFromURL(url, setter: { [weak self] in self?.avatarImage = $0 })
+        }
+    }
+    
+    func updateRelease() {
+        
+        guard var url = model.releasesUrl else {
+            return
+        }
+        
+        if let i = url.firstIndex(of:"{") {
+            url.removeSubrange(i ..< url.endIndex)
+        }
+        
+        cancellable = api!.releases(url:url).sink(
+            receiveCompletion: { [weak self] completion in
+                guard let self = self else { return }
+                switch completion {
+                    case .failure(let error):
+                        self.error = error.localizedDescription
+                    case .finished:
+                        self.error = nil
+                }
+            },
+            receiveValue: { [weak self] value in
+                guard let self = self else { return }
+                if value.count > 0 {
+                    if let last = value.max(by: { $0.releaseDate < $1.releaseDate }) {
+                        self.infos.removeLast()
+                        self.infos.append(Info(name:"Last release version", info:last.tagName))
+                    }
+                }
+            })
+    }
 }
 
 

@@ -16,11 +16,13 @@ struct MainScreen: View {
     
     @State private var navigation: Screens = Screens.launch
     
+    @Environment(\.repositoryAPI) private var api
+    
     var body: some View {
         
         switch navigation {
             case Screens.launch:  LaunchScreen(navigation:$navigation)
-            case Screens.search:  RepositoryBrowserView()
+            case Screens.search:  RepositoryBrowserView(viewModel: RepositoryBrowserViewModel(api: api))
         }
     }
 }

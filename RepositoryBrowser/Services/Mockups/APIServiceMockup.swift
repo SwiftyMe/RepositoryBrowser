@@ -12,9 +12,9 @@ import Combine
 ///
 /// Mockup of the APIServiceRepository protocol for test use
 ///
-class APIServiceMockup1: APIServiceRepository {
+class APIServiceMockup1: RepositoryAPI {
     
-    typealias Error = APIServiceError
+    typealias Error = APIError
     
     var repositories: [RepositoryModel] = []
     var releases: [RepositoryReleaseModel] = []

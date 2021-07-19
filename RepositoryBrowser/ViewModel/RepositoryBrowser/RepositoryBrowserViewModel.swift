@@ -70,12 +70,12 @@ class RepositoryBrowserViewModel: ObservableObject {
         repositories!.append(RepositoryViewModel(model: RepositoryModel(id:2, org: "789", name:"HIJ", description:"$$$")))
     }
     
-    init(api:APIServiceRepository) {
+    init(api:RepositoryAPI) {
         
         self.api = api
     }
     
-    private let api: APIServiceRepository?
+    private let api: RepositoryAPI?
     private var cancellable: AnyCancellable?
     
     private let minCharacters = Int(3)

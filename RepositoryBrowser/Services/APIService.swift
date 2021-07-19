@@ -11,18 +11,18 @@ import Combine
 ///
 /// protocol Errors
 ///
-enum APIServiceError: Swift.Error {
+enum APIError: Swift.Error {
     case InvalidParameter(String)
     case InvalidURL
     case Network(HTTPService.Error)
 }
 
 ///
-/// protocol APIServiceRepository
+/// protocol RepositoryAPI
 ///
-protocol APIServiceRepository {
+protocol RepositoryAPI {
     
-    typealias Error = APIServiceError
+    typealias Error = APIError
     
     func repositories(withName: String) -> AnyPublisher<[RepositoryModel],Error>
     
@@ -33,9 +33,9 @@ protocol APIServiceRepository {
 ///
 /// - Note: Intended only for demonstration purposes
 ///
-class APIService: APIServiceRepository {
+class APIService: RepositoryAPI {
     
-    typealias Error = APIServiceError
+    typealias Error = APIError
     
     /// APIServiceRepository protocol function - repositories
     ///

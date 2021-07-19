@@ -47,7 +47,7 @@ class RepositoryBrowserTests: XCTestCase {
     
     func testExample4() throws {
 
-        let vm = RepositoryBrowserViewModel(api:APIServiceMockup1(error:APIServiceError.Network(.HTTPCode(-344))))
+        let vm = RepositoryBrowserViewModel(api:APIServiceMockup1(error:APIError.Network(.HTTPCode(-344))))
         
         vm.searchText = "name1"
         

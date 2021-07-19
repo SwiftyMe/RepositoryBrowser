@@ -12,7 +12,9 @@ import SwiftUI
 ///
 struct RepositoryBrowserView: View {
     
-    @ObservedObject private var viewModel = RepositoryBrowserViewModel(api:APIService())
+    @ObservedObject var viewModel: RepositoryBrowserViewModel
+    
+    @Environment(\.repositoryAPI) private var api
     
     var body: some View {
         
@@ -67,7 +69,7 @@ struct RepositoryBrowserView: View {
                                 destination:
                                     RepositoryInfoView(viewModel:
                                         RepositoryInfoViewModel(model: repository.modelObject,
-                                                    avatarImage: repository.image, api: APIService()))
+                                                    avatarImage: repository.image, api: api))
                                 ,label: {
                                     RepositoryView(viewModel:repository)
                                 })
@@ -88,6 +90,6 @@ struct RepositoryBrowserView: View {
 ///
 struct SearchScreen_Previews: PreviewProvider {
     static var previews: some View {
-        RepositoryBrowserView()
+        RepositoryBrowserView(viewModel: RepositoryBrowserViewModel(api: APIService()))
     }
 }
