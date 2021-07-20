@@ -71,7 +71,7 @@ class RepositoryBrowserViewModel: ObservableObject {
     }
     
     init(api:RepositoryAPI) {
-        
+
         self.api = api
     }
     

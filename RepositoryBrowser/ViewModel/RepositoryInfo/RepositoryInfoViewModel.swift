@@ -20,17 +20,7 @@ class RepositoryInfoViewModel: ObservableObject, Identifiable {
     var id: Int {
         model.id
     }
-    
-    /// SwiftUI life cycle event onAppear
-    func onAppear() {
-        
-        updateImage()
-        updateRelease()
 
-        assert(!appeared)
-        appeared = true
-    }
-    
     @Published var avatarImage: UIImage?
     
     let fullName: String
@@ -39,7 +29,7 @@ class RepositoryInfoViewModel: ObservableObject, Identifiable {
     @Published var infos: [Info]
     
     init(model: RepositoryModel, avatarImage: UIImage? = nil, api: RepositoryAPI) {
-        
+
         self.api = api
         self.model = model
         
@@ -54,12 +44,14 @@ class RepositoryInfoViewModel: ObservableObject, Identifiable {
         infos.append(Info(name:"Last release version", info:""))
         
         self.avatarImage = avatarImage
+        
+        updateImage()
+        updateRelease()
     }
     
     private let model: RepositoryModel
     private let api: RepositoryAPI?
     private var cancellable: AnyCancellable?
-    private var appeared = false
 }
 
 
